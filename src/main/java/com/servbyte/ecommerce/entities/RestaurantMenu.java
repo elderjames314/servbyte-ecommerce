@@ -1,6 +1,8 @@
 package com.servbyte.ecommerce.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "restaurant_menus")
 public class RestaurantMenu extends AbstractEntity {
     private String name;
