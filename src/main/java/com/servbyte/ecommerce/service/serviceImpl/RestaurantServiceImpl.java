@@ -52,4 +52,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         throw new BadRequestException(ApiErrorCodes.INVALID_REQUEST.getKey(), "city cannot be empty");
     }
 
+    public List<Cities> fetchAllCities(){
+        return citiesRepository.findAll();
+    }
 }

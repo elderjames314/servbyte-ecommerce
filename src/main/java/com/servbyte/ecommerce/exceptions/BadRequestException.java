@@ -1,6 +1,5 @@
 package com.servbyte.ecommerce.exceptions;
 
-
 import com.servbyte.ecommerce.dtos.response.ApiResponse;
 
 public class BadRequestException extends RuntimeException {

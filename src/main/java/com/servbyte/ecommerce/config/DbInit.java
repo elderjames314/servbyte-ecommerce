@@ -24,13 +24,14 @@ public class DbInit {
 
     @PostConstruct
     private void creatCities(){
-        Cities cities = new Cities();
+
         List<CitiesDto> citiesList = Arrays.asList(new CitiesDto("LAGOS"),
                 new CitiesDto("ABUJA"), new CitiesDto("IBADAN"), new CitiesDto("UYO"),
                 new CitiesDto("PORT HACOURT"), new CitiesDto("ENUGU"), new CitiesDto("ASABA"),
                 new CitiesDto("KANO"), new CitiesDto("UMUAHIA"), new CitiesDto("ABA"), new CitiesDto("OWERRI"));
 
         citiesList.forEach(city -> {
+            Cities cities = new Cities();
             BeanUtils.copyProperties(city, cities);
             citiesRepository.save(cities);
         });
