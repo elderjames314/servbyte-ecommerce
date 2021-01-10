@@ -70,8 +70,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**")
                 .permitAll()
                 .antMatchers( "/roles/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/auth/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/auth/**").permitAll()
                 // all other requests need to be authenticated
                 .anyRequest().authenticated().and()
                 .csrf().disable().sessionManagement()

@@ -17,12 +17,13 @@ public class Restaurant extends AbstractEntity{
     private String restaurantName;
     private String restaurantEmail;
     private String restaurantLogo;
-    @ElementCollection
-    private List<String> cities;
+    @OneToMany
+    private List<Cities> listOfCities;
     private String restaurantPhoneNumber;
     @ManyToOne
     private ApplicationUser applicationUser;
     @OneToMany
     Collection<RestaurantMenu> menuCollections;
+
 
 }

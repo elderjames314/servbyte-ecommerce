@@ -4,20 +4,17 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "restaurant_cities")
-public class Cities extends AbstractEntity {
+public class Cities {
     private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Cities(String name){
-        this.name = name;
-    }
 
-    public Cities() {
-    }
 }

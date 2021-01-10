@@ -16,6 +16,7 @@ import java.util.Set;
 public class ApplicationUser extends AbstractEntity implements UserDetails {
     private String firstName;
     private String lastName;
+    private String phoneNumber;
     private String email;
     private String city;
     private String password;

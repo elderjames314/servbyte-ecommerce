@@ -9,6 +9,7 @@ import java.util.Set;
 public class ApplicationUserDto {
     private String firstName;
     private String lastName;
+    private String email;
     private String city;
     private String password;
     private String phoneNumber;
