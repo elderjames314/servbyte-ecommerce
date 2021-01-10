@@ -5,11 +5,9 @@ import com.servbyte.ecommerce.dtos.ApplicationUserLoginDto;
 import com.servbyte.ecommerce.dtos.response.ApplicationUserResponse;
 import com.servbyte.ecommerce.dtos.response.JwtResponse;
 import com.servbyte.ecommerce.entities.ApplicationUser;
-import com.servbyte.ecommerce.entities.Roles;
 import com.servbyte.ecommerce.enums.ApiErrorCodes;
 import com.servbyte.ecommerce.exceptions.BadRequestException;
 import com.servbyte.ecommerce.repository.ApplicationUserRepository;
-import com.servbyte.ecommerce.repository.RoleRepository;
 import com.servbyte.ecommerce.security.JwtTokenService;
 import com.servbyte.ecommerce.service.UserService;
 import org.slf4j.Logger;
@@ -30,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,24 +39,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private ApplicationUserRepository userRepository;
 
-    private RoleRepository roleRepository;
-
     private PasswordEncoder bCryptPasswordEncoder;
 
     private AuthenticationManager authenticationManager;
 
     private JwtTokenService jwtTokenService;
 
+    private final List<String> roleList = Arrays.asList("ÜSER", "RESTAURANT", "LOGISTICS");
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public UserServiceImpl(ApplicationUserRepository userRepository, PasswordEncoder bCryptPasswordEncoder,
-                           AuthenticationManager authenticationManager, RoleRepository roleRepository,
+                           AuthenticationManager authenticationManager,
                            JwtTokenService jwtTokenService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.authenticationManager = authenticationManager;
-        this.roleRepository = roleRepository;
         this.jwtTokenService = jwtTokenService;
     }
 
@@ -65,20 +63,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void registerUser(ApplicationUserDto userDTO) {
         ApplicationUser user = new ApplicationUser();
         BeanUtils.copyProperties(userDTO, user);
+        if(!roleList.stream().anyMatch(role -> user.getRole().equals(role))){
+            throw new BadRequestException(ApiErrorCodes.INVALID_REQUEST.getKey(), "Role not found");
+        }
         String password = bCryptPasswordEncoder.encode(userDTO.getPassword());
         user.setPassword(password);
-        Set<Roles> roles = new HashSet<>();
-        if(userDTO.getRoles() == null || userDTO.getRoles().isEmpty()) {
-            var role = roleRepository.findByName("USER");
-            roles.add(role);
-        }else {
-            for(Roles role : userDTO.getRoles()){
-                var r = roleRepository.findByName(role.getName());
-                if(r != null) roles.add(r);
-            }
-        }
         user.setCreatedDate(LocalDateTime.now());
-        user.setRoles(roles);
         userRepository.save(user);
     }
 
@@ -109,7 +99,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
 
-        new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), AuthorityUtils.createAuthorityList(user.getRoles().stream().map(roles -> roles.getName()).toArray(String[]::new)));
+        new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), AuthorityUtils.createAuthorityList(user.getRole()));
         return user;
     }
 
@@ -120,7 +110,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(auth);
         ApplicationUser user = (ApplicationUser) loadUserByUsername(loginDTO.getEmail());
         BeanUtils.copyProperties(user, jwtResponse);
-        jwtResponse.setAccessToken(jwtTokenService.generateToken(loginDTO.getEmail(), user.getRoles()));
+        jwtResponse.setAccessToken(jwtTokenService.generateToken(loginDTO.getEmail(), user.getRole()));
 
         return jwtResponse;
     }

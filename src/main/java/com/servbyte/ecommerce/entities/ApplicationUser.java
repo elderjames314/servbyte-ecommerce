@@ -3,11 +3,16 @@ package com.servbyte.ecommerce.entities;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Getter
@@ -20,12 +25,15 @@ public class ApplicationUser extends AbstractEntity implements UserDetails {
     private String email;
     private String city;
     private String password;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Roles> roles;
+    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<GrantedAuthority> authorities = Stream.of(role)
+                .map(s -> new SimpleGrantedAuthority(s))
+                .collect(Collectors.toList());
+
+        return authorities;
     }
 
     @Override
