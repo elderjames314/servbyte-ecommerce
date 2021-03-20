@@ -1,16 +1,12 @@
 package com.servbyte.ecommerce.security;
 
-import com.servbyte.ecommerce.entities.Roles;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -23,10 +19,10 @@ public class JwtTokenService {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateToken(String username, Set<Roles> roles) {
+    public String generateToken(String username, String role) {
         final long currentTime = System.currentTimeMillis();
         Claims claims = Jwts.claims().setSubject(username);
-        final List<String> addRoles = roles.stream().map(roles1 -> roles1.getName()).collect(Collectors.toList());
+        final List<String> addRoles = Arrays.asList(role);
         claims.put(ROLES, addRoles);
 
         return Jwts.builder()//

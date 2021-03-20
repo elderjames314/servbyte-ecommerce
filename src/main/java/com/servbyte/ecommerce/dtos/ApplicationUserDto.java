@@ -1,17 +1,23 @@
 package com.servbyte.ecommerce.dtos;
 
-import com.servbyte.ecommerce.entities.Roles;
 import lombok.Data;
+import lombok.NonNull;
 
-import java.util.Set;
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class ApplicationUserDto {
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotBlank
     private String email;
+    @NotBlank
     private String city;
+    @NotBlank
     private String password;
     private String phoneNumber;
-    private Set<Roles> roles;
+    @NotBlank
+    private String role;
 }
